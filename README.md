@@ -1,12 +1,24 @@
-# Název mého projektu, programu, hry...
+# Echoes of Gwent
 
 ## Téma
 
-Tady bude krátký a úderný popis o účelu, významu, funkcionalitě...
+Echoes of Gwent je webová aplikace založená na React frameworku, která přináší fanouškům Zaklínače digitální verzi oblíbené karetní hry Gwent. Tato aplikace nabízí interaktivní prostředí, ve kterém si hráči mohou zahrát Gwent proti umělé inteligenci nebo v režimu pro jednoho hráče, kde si postupně vylepšují své balíčky a strategie proti různým protivníkům. Hra je designována tak, aby co nejvěrněji reflektovala pravidla a atmosféru Gwentu, jak je známe ze světa Zaklínače, a zároveň využívala moderní webové technologie pro plynulý a vizuálně atraktivní herní zážitek.
+
+## Účel a význam
+
+Cílem Echoes of Gwent je poskytnout hráčům poutavou a strategicky bohatou hru Gwent, která je přístupná online bez nutnosti instalace speciálního softwaru. Aplikace slibuje podpořit komunitu fanoušků Zaklínače tím, že jim umožní zahrát si jejich oblíbenou hru kdykoli a kdekoliv, s přidanou hodnotou v podobě možnosti vyzvat umělou inteligenci nebo se zapojit do turnajů a výzev, které aplikace pravidelně nabízí.
+
+## Funkcionalita
+
+- Herní režimy: Solo proti AI nebo tréninkový mód pro zdokonalování strategií a balíčků.
+- Vylepšení balíčků: Možnost sbírat karty a vylepšovat svůj balíček skrze výhry nebo výměnu.
+- Interaktivní tutoriál: Učení pravidel a strategií Gwentu skrze vedený tutoriál.
+- Turnaje a výzvy: Pravidelné eventy pro testování dovedností a získávání unikátních odměn.
+- React Router pro navigaci: Snadný přechod mezi různými částmi aplikace.
+- Local Storage pro ukládání progressu: Možnost kdykoliv pokračovat ve hře nebo se vrátit k nedokončenému duelu.
 
 ## Odkazy pro vývoj
 
-Zde budou živé linky na:
 - figma návrh stránek aplikace
 - odkaz na gh-pages projektu
 - odkaz do repozitáře projektu, pokud pracuji v teamu a zde vývoj neprobíhá
