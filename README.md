@@ -6,7 +6,7 @@ Echoes of Gwent je webová aplikace založená na React frameworku, která přin
 
 ## Účel a význam
 
-Cílem Echoes of Gwent je poskytnout hráčům poutavou a strategicky bohatou hru Gwent, která je přístupná online bez nutnosti instalace speciálního softwaru. Aplikace slibuje podpořit komunitu fanoušků Zaklínače tím, že jim umožní zahrát si jejich oblíbenou hru kdykoli a kdekoliv, s přidanou hodnotou v podobě možnosti vyzvat umělou inteligenci nebo se zapojit do turnajů a výzev, které aplikace pravidelně nabízí.
+Cílem Echoes of Gwent je poskytnout hráčům poutavou a strategicky bohatou hru Gwent, která je přístupná online bez nutnosti instalace speciálního softwaru. Aplikace slibuje podpořit komunitu fanoušků Zaklínače tím, že jim umožní zahrát si jejich oblíbenou hru kdykoli a kdekoliv, s přidanou hodnotou v podobě možnosti vyzvat umělou inteligenci nebo se zapojit do turnajů a výzev.
 
 ## Funkcionalita
 
