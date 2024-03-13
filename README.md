@@ -2,11 +2,11 @@
 
 ## Téma
 
-Echoes of Gwent je webová aplikace založená na React frameworku, která přináší fanouškům Zaklínače digitální verzi oblíbené karetní hry Gwent. Tato aplikace nabízí interaktivní prostředí, ve kterém si hráči mohou zahrát Gwent proti umělé inteligenci nebo v režimu pro jednoho hráče, kde si postupně vylepšují své balíčky a strategie proti různým protivníkům. Hra je designována tak, aby co nejvěrněji reflektovala pravidla a atmosféru Gwentu, jak je známe ze světa Zaklínače, a zároveň využívala moderní webové technologie pro plynulý a vizuálně atraktivní herní zážitek.
+Echoes of Gwent je dynamická webová aplikace postavená na základech React frameworku, která nabízí fanouškům Zaklínače možnost ponořit se do digitálního světa oblíbené karetní hry Gwent. Aplikace je navržena tak, aby poskytovala uživatelům interaktivní a vizuálně poutavý herní zážitek, přičemž věrně zachovává pravidla a atmosféru originální hry známé z univerza Zaklínače. Hráči mají k dispozici režim pro jednoho hráče, kde mohou vyzvat umělou inteligenci, nebo se mohou věnovat strategickému zdokonalování svých balíčků prostřednictvím bojů proti rozmanitým protivníkům.
 
-## Účel a význam
+Jedinečným prvkem Echoes of Gwent je hluboce zapojená příběhová kampaň, která hráče provede skrze bohaté narativy inspirované fascinujícím světem Zaklínače. Tato kampaň umožňuje hráčům nejen prozkoumat nové příběhové linie a interagovat s ikonickými postavami, ale také odemykat nové karty, které se stávají klíčovými prvky pro rozvoj jejich balíčků. Postupem příběhu a úspěchy v kampani si hráči otevírají přístup k exkluzivním kartám, které mohou následně využít v solo režimu a v turnajích. Tím se rozšiřují možnosti pro strategickou hru a umožňuje hráčům stále se zdokonalovat a přizpůsobovat své strategie pro různé herní výzvy.
 
-Cílem Echoes of Gwent je poskytnout hráčům poutavou a strategicky bohatou hru Gwent, která je přístupná online bez nutnosti instalace speciálního softwaru. Aplikace slibuje podpořit komunitu fanoušků Zaklínače tím, že jim umožní zahrát si jejich oblíbenou hru kdykoli a kdekoliv, s přidanou hodnotou v podobě možnosti vyzvat umělou inteligenci nebo se zapojit do turnajů a výzev.
+Echoes of Gwent tedy nabízí nejen tradiční zážitek z hraní Gwentu, ale také přidává novou dimenzi strategické hloubky a příběhového prožitku, čímž vytváří bohatý a komplexní herní svět, který je přístupný online bez nutnosti jakékoliv instalace.
 
 ## Funkcionalita
 
