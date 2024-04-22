@@ -1,7 +1,5 @@
 # Echoes of Gwent
 
-![introductory image](introductory_image.webp)
-
 ## Téma
 
 **Echoes of Gwent** je dynamická webová aplikace postavená na základech React frameworku, která nabízí fanouškům Zaklínače možnost ponořit se do digitálního světa oblíbené karetní hry Gwent. Aplikace je navržena tak, aby poskytovala uživatelům interaktivní a vizuálně poutavý herní zážitek, přičemž věrně zachovává pravidla a atmosféru originální hry známé z univerza Zaklínače. Hráči mají k dispozici režim pro jednoho hráče, kde mohou vyzvat umělou inteligenci, nebo se mohou věnovat strategickému zdokonalování svých balíčků prostřednictvím bojů proti rozmanitým protivníkům.
