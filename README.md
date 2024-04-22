@@ -12,10 +12,6 @@ Jedinečným prvkem **Echoes of Gwent** je hluboce zapojená příběhová kampa
 
 - **Herní režimy**: Echoes of Gwent nabízí dva hlavní herní režimy – solo hru proti pokročilé umělé inteligenci, která poskytuje reálnou výzvu i pro zkušené hráče, a tréninkový mód, kde mohou hráči experimentovat a zdokonalovat své strategie a balíčky bez tlaku na výsledek.
 
-- **Vylepšení balíčků**: Hráči mají možnost sbírat karty a systematicky vylepšovat své balíčky prostřednictvím výher v duelích nebo výměnou s ostatními hráči či systémem. Nové karty lze získat také postupem v příběhové kampani, která otevírá exkluzivní karty při dosažení určitých milníků.
-
-- **Interaktivní tutoriál**: Pro nováčky i pro hráče, kteří si chtějí osvěžit pravidla, Echoes of Gwent poskytuje interaktivní tutoriál. Ten hráče krok za krokem provádí pravidly Gwentu a základními i pokročilými strategiemi, čímž zajišťuje, že i úplní začátečníci mohou rychle začít hrát a užívat si hru na plno.
-
 - **Turnaje a výzvy**: Aplikace pravidelně hostí turnaje a speciální výzvy, kde mohou hráči testovat své dovednosti proti ostatním a získávat unikátní odměny, které nelze získat jinak. Tyto eventy nabízejí jedinečnou příležitost pro hráče, aby se ukázali v konkurenčním prostředí a zároveň si rozšířili svou sbírku karet.
   
 - **Příběhová kampaň**: Jádrem Echoes of Gwent je také rozsáhlá příběhová kampaň, která hráče zavede do hlubin světa Zaklínače. Skrze narativně vedené mise s rozvětvenými cestami a rozhodnutími, která mají vliv na průběh hry, mohou hráči odemykat speciální karty a vylepšení, které pak využijí v solo režimu i v turnajích.
