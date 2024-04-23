@@ -10,8 +10,8 @@ interface CardProps {
   onPlay: () => void;
 }
 
-const Card: React.FC<CardProps> = ({ name, power, ability, type, lore, onPlay }) => (
-  <div onClick={onPlay} style={{ cursor: 'pointer', border: '1px solid black', padding: '10px', margin: '5px' }}>
+const Card: React.FC<CardProps> = ({ id, name, power, ability, type, lore, onPlay }) => (
+  <div onClick={() => onPlay()} style={{ cursor: 'pointer', border: '1px solid black', padding: '10px', margin: '5px' }}>
     <h3>{name} ({type})</h3>
     <p>Power: {power}</p>
     <p>Ability: {ability}</p>
