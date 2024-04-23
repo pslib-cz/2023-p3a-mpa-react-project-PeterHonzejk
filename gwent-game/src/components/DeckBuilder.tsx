@@ -29,6 +29,8 @@ const DeckBuilder: React.FC = () => {
     }
   };
 
+  const filteredCards = (type: string) => availableCards.filter(card => card.type === type);
+
   return (
     <div>
       <h1>Deck Builder</h1>
@@ -39,12 +41,14 @@ const DeckBuilder: React.FC = () => {
         ))}
         {deck.length === 0 && <p>No cards in your deck. Click on a card below to add it.</p>}
       </div>
-      <div>
-        <h2>Available Cards</h2>
-        {availableCards.map(card => (
-          <Card key={card.id} {...card} onPlay={() => addToDeck(card.id)} />
-        ))}
-      </div>
+      {['Close Combat', 'Ranged Combat', 'Siege', 'Leader', 'Weather'].map((type) => (
+        <div key={type}>
+          <h2>{type.charAt(0).toUpperCase() + type.slice(1)} Cards</h2>
+          {filteredCards(type).map(card => (
+            <Card key={card.id} {...card} onPlay={() => addToDeck(card.id)} />
+          ))}
+        </div>
+      ))}
     </div>
   );
 };
