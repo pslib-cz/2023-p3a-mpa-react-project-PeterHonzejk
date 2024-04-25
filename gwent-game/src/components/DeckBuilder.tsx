@@ -39,7 +39,7 @@ const DeckBuilder: React.FC = () => {
   const handleFactionChange = (faction: string) => {
     setSelectedFaction(faction);
     setSelectedLeader(null);
-    setDeck([]);
+    setDeck([]); 
   };
 
   const handleLeaderSelection = (leaderId: number) => {
@@ -54,7 +54,10 @@ const DeckBuilder: React.FC = () => {
   };
 
   const removeFromDeck = (cardId: number) => {
-    setDeck(currentDeck => currentDeck.filter(card => card.id !== cardId));
+    const card = deck.find(card => card.id === cardId);
+    if (card && card.type !== 'Leader') {
+      setDeck(currentDeck => currentDeck.filter(c => c.id !== cardId));
+    }
   };
 
   const factions = Array.from(new Set(cardPool.filter(card => card.type === 'Leader').map(card => card.faction)));

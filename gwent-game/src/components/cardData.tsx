@@ -33,8 +33,8 @@ export const cardPool: CardData[] = [
     { id: 124, type: "Siege", faction: "Humanity", name: "Orbital Strike", power: 9, ability: "Obliterate Force", lore: "Orbital Strikes are the ultimate deterrence, called down from space stations orbiting above the conflict zone, devastating enemy lines from above." },
     { id: 125, type: "Siege", faction: "Humanity", name: "Engineer Sophia Bell", power: 11, ability: "Hero", lore: "Sophia Bell, chief engineer of the star fleet's artillery division, designs weapons that can break through any fortification." },
     // Human Leader Cards
-    { id: 131, type: "Leader", faction: "Humanity", name: "Admiral Elara Myles", power: 12, ability: "Call Reinforcements", lore: "Admiral Elara Myles commands the human fleet with an iron will and a sharp mind, turning the tides of war with her strategic genius." },
-    { id: 132, type: "Leader", faction: "Humanity", name: "General Carter Blake", power: 12, ability: "Orbital Bombardment", lore: "General Carter Blake, a seasoned war hero, coordinates devastating orbital strikes, breaking enemy lines with precision." },
+    { id: 131, type: "Leader", faction: "Humanity", name: "Admiral Elara Myles", power: 0, ability: "Call Reinforcements", lore: "Admiral Elara Myles commands the human fleet with an iron will and a sharp mind, turning the tides of war with her strategic genius." },
+    { id: 132, type: "Leader", faction: "Humanity", name: "General Carter Blake", power: 0, ability: "Orbital Bombardment", lore: "General Carter Blake, a seasoned war hero, coordinates devastating orbital strikes, breaking enemy lines with precision." },
     // Alien Close Combat Cards
     { id: 201, type: "Close Combat", faction: "Aliens", name: "Xenowarrior", power: 6, ability: "Agile", lore: "Xenowarriors, hailing from the dense jungles of Xylon, use bio-enhanced exoskeletons to adapt rapidly to any combat situation." },
     { id: 202, type: "Close Combat", faction: "Aliens", name: "Mind Leech", power: 4, ability: "Spy", lore: "Mind Leeches from the psychic swamps of Mindara can infiltrate enemy ranks undetected, sapping intelligence and disrupting strategies." },
