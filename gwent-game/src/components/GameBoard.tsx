@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import Card from './Card';
 import { CardData } from './cardData';
 
@@ -45,8 +46,7 @@ const GameBoard: React.FC = () => {
   const playCard = (cardId: number, type: CardType) => {
     const cardIndex = cardsInHand.findIndex(card => card.id === cardId);
     if (cardIndex > -1) {
-      const card = cardsInHand[cardIndex];
-      setCardsInHand(cardsInHand.filter((_, index) => index !== cardIndex));
+      const card = cardsInHand.splice(cardIndex, 1)[0];
       setPlayedCards(prev => ({
         ...prev,
         [type]: [...prev[type], card]
@@ -77,6 +77,9 @@ const GameBoard: React.FC = () => {
         <Card key={card.id} {...card} onPlay={() => playCard(card.id, card.type as CardType)} />
       ))}
       {(['Close Combat', 'Ranged Combat', 'Siege', 'Leader', 'Weather'] as CardType[]).map(type => renderRow(type))}
+      <div style={{ marginTop: '20px' }}>
+        <Link to="/">Exit</Link>
+      </div>
     </div>
   );
 };

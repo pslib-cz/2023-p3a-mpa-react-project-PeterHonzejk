@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import Card from './Card';
 import { CardData, cardPool } from './cardData';
 
@@ -8,67 +9,79 @@ const DeckBuilder: React.FC = () => {
     return savedDeck ? JSON.parse(savedDeck) : [];
   });
 
+  const [selectedFaction, setSelectedFaction] = useState<string | null>(null);
   const [selectedLeader, setSelectedLeader] = useState<number | null>(null);
   const [availableCards, setAvailableCards] = useState<CardData[]>([]);
-
-  useEffect(() => {
-    const leader = cardPool.find(card => card.id === selectedLeader);
-    if (leader) {
-      const leaderFaction = leader.faction;
-      const newAvailableCards = cardPool.filter(card => card.faction === leaderFaction || card.type === "Weather");
-      const newDeck = newAvailableCards.filter(card => card.id !== leader.id); 
-      setAvailableCards(newAvailableCards);
-      setDeck([leader]);
-    } else {
-      setAvailableCards([]);
-      setDeck([]);
-    }
-  }, [selectedLeader]); 
 
   useEffect(() => {
     localStorage.setItem('userDeck', JSON.stringify(deck));
   }, [deck]);
 
+  useEffect(() => {
+    if (selectedFaction) {
+      const factionCards = cardPool.filter(card => card.faction === selectedFaction || card.type === "Weather");
+      setAvailableCards(factionCards.filter(card => card.type !== 'Leader' && !deck.some(d => d.id === card.id))); // Exclude leaders from available cards
+    } else {
+      setAvailableCards([]);
+      setDeck([]);
+    }
+  }, [selectedFaction, deck]);
+
+  useEffect(() => {
+    if (selectedLeader) {
+      const leader = cardPool.find(card => card.id === selectedLeader);
+      if (leader) {
+        setDeck([leader]);
+      }
+    }
+  }, [selectedLeader]);
+
+  const handleFactionChange = (faction: string) => {
+    setSelectedFaction(faction);
+    setSelectedLeader(null);
+    setDeck([]);
+  };
+
+  const handleLeaderSelection = (leaderId: number) => {
+    setSelectedLeader(leaderId);
+  };
+
   const addToDeck = (cardId: number) => {
     const card = availableCards.find(card => card.id === cardId);
-    if (card) {
+    if (card && !deck.some(dc => dc.id === cardId)) {
       setDeck(currentDeck => [...currentDeck, card]);
-      setAvailableCards(currentAvailable => currentAvailable.filter(c => c.id !== cardId));
     }
   };
 
   const removeFromDeck = (cardId: number) => {
-    const card = deck.find(card => card.id === cardId);
-    if (card && card.type !== "Leader") { // Prevent removing the leader
-      setAvailableCards(currentAvailable => [...currentAvailable, card]);
-      setDeck(currentDeck => currentDeck.filter(c => c.id !== cardId));
-    }
+    setDeck(currentDeck => currentDeck.filter(card => card.id !== cardId));
   };
 
-  const filteredCards = (type: string) => availableCards.filter(card => card.type === type);
-
-  const leaderOptions = cardPool.filter(card => card.type === 'Leader');
+  const factions = Array.from(new Set(cardPool.filter(card => card.type === 'Leader').map(card => card.faction)));
 
   return (
     <div>
       <h1>Deck Builder</h1>
       <div>
-        <label>Select Leader:</label>
-        {leaderOptions.map(leader => (
-          <div key={leader.id} onClick={() => setSelectedLeader(leader.id)} 
-               style={{ 
-                 border: '1px solid black', 
-                 padding: '10px', 
-                 margin: '5px', 
-                 cursor: 'pointer',
-                 backgroundColor: selectedLeader === leader.id ? 'lightblue' : 'white' 
-               }}>
-            <h3>{leader.name} - {leader.faction}</h3>
-            <p>Ability: {leader.ability}</p>
-            <p>Description: {leader.lore}</p>
-          </div>
-        ))}
+        <label>Select Faction:</label>
+        <select onChange={(e) => handleFactionChange(e.target.value)} value={selectedFaction || ""}>
+          <option value="">Choose a faction</option>
+          {factions.map(faction => (
+            <option key={faction} value={faction}>{faction}</option>
+          ))}
+        </select>
       </div>
+      {selectedFaction && (
+        <div>
+          <label>Select Leader:</label>
+          <select onChange={(e) => handleLeaderSelection(Number(e.target.value))} value={selectedLeader || ""}>
+            <option value="">Choose a leader</option>
+            {cardPool.filter(card => card.faction === selectedFaction && card.type === 'Leader').map(leader => (
+              <option key={leader.id} value={leader.id}>{leader.name}</option>
+            ))}
+          </select>
+        </div>
+      )}
       {selectedLeader && (
         <>
           <div>
@@ -76,18 +89,17 @@ const DeckBuilder: React.FC = () => {
             {deck.map(card => (
               <Card key={card.id} {...card} onPlay={() => removeFromDeck(card.id)} />
             ))}
-            {deck.length === 0 && <p>No cards in your deck. Click on a card below to add it.</p>}
+            {deck.length === 0 && <p>No cards in your deck yet.</p>}
           </div>
-          {['Close Combat', 'Ranged Combat', 'Siege', 'Leader', 'Weather'].map((type) => (
-            <div key={type}>
-              <h2>{type.charAt(0).toUpperCase() + type.slice(1)} Cards</h2>
-              {filteredCards(type).map(card => (
-                <Card key={card.id} {...card} onPlay={() => addToDeck(card.id)} />
-              ))}
-            </div>
-          ))}
+          <div>
+            <h2>Available Cards</h2>
+            {availableCards.map(card => (
+              <Card key={card.id} {...card} onPlay={() => addToDeck(card.id)} />
+            ))}
+          </div>
         </>
       )}
+      <Link to="/">Exit</Link>
     </div>
   );
 };
