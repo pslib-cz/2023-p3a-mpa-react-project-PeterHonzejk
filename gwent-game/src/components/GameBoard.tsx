@@ -23,6 +23,7 @@ interface PlayedCards {
 
 const GameBoard: React.FC = () => {
   const [cardsInHand, setCardsInHand] = useState<CardData[]>([]);
+  const [remainingCards, setRemainingCards] = useState<CardData[]>([]); // Store remaining cards
   const [playedCards, setPlayedCards] = useState<PlayedCards>({
     'Close Combat': [],
     'Ranged Combat': [],
@@ -50,9 +51,21 @@ const GameBoard: React.FC = () => {
     } else {
       const loadedDeck = JSON.parse(deck);
       const loadedLeader = JSON.parse(leader);
-      setCardsInHand([...loadedDeck, loadedLeader]);
+      const shuffledDeck = shuffle([...loadedDeck]);
+      const selectedCards = shuffledDeck.slice(0, 10); // Select 10 random cards
+      const remainingDeck = shuffledDeck.slice(10);   // Remaining cards
+      setCardsInHand([...selectedCards, loadedLeader]); // Include leader card
+      setRemainingCards(remainingDeck);
     }
   }, [navigate]);
+
+  const shuffle = (deck: CardData[]) => {
+    for (let i = deck.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [deck[i], deck[j]] = [deck[j], deck[i]]; // Swap elements
+    }
+    return deck;
+  };
 
   const playCard = (cardId: number, type: CardType) => {
     const cardIndex = cardsInHand.findIndex(card => card.id === cardId);
