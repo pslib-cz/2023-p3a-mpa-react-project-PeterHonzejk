@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import Card from './Card';
 import { CardData } from './cardData';
 
@@ -22,11 +22,7 @@ interface PlayedCards {
 }
 
 const GameBoard: React.FC = () => {
-  const [cardsInHand, setCardsInHand] = useState<CardData[]>(() => {
-    const savedDeck = localStorage.getItem('userDeck');
-    return savedDeck ? JSON.parse(savedDeck) : [];
-  });
-
+  const [cardsInHand, setCardsInHand] = useState<CardData[]>([]);
   const [playedCards, setPlayedCards] = useState<PlayedCards>({
     'Close Combat': [],
     'Ranged Combat': [],
@@ -42,6 +38,18 @@ const GameBoard: React.FC = () => {
     Leader: 0,
     Weather: 0
   });
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const deck = localStorage.getItem('userDeck');
+    if (!deck || JSON.parse(deck).length !== 20) {
+      alert('You must have exactly 20 cards in your deck to play the game.');
+      navigate('/');
+    } else {
+      setCardsInHand(JSON.parse(deck));
+    }
+  }, [navigate]);
 
   const playCard = (cardId: number, type: CardType) => {
     const cardIndex = cardsInHand.findIndex(card => card.id === cardId);

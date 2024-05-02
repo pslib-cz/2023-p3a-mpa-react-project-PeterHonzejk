@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Card from './Card';
 import { CardData, cardPool } from './cardData';
 
@@ -20,7 +20,7 @@ const DeckBuilder: React.FC = () => {
   useEffect(() => {
     if (selectedFaction) {
       const factionCards = cardPool.filter(card => card.faction === selectedFaction || card.type === "Weather");
-      setAvailableCards(factionCards.filter(card => card.type !== 'Leader' && !deck.some(d => d.id === card.id))); // Exclude leaders from available cards
+      setAvailableCards(factionCards.filter(card => card.type !== 'Leader' && !deck.some(d => d.id === card.id)));
     } else {
       setAvailableCards([]);
       setDeck([]);
@@ -39,7 +39,7 @@ const DeckBuilder: React.FC = () => {
   const handleFactionChange = (faction: string) => {
     setSelectedFaction(faction);
     setSelectedLeader(null);
-    setDeck([]); 
+    setDeck([]);
   };
 
   const handleLeaderSelection = (leaderId: number) => {
@@ -47,6 +47,10 @@ const DeckBuilder: React.FC = () => {
   };
 
   const addToDeck = (cardId: number) => {
+    if (deck.length >= 20) {
+      alert('You cannot add more than 20 cards to the deck, including the leader.');
+      return;
+    }
     const card = availableCards.find(card => card.id === cardId);
     if (card && !deck.some(dc => dc.id === cardId)) {
       setDeck(currentDeck => [...currentDeck, card]);
@@ -88,7 +92,7 @@ const DeckBuilder: React.FC = () => {
       {selectedLeader && (
         <>
           <div>
-            <h2>Your Deck</h2>
+            <h2>Your Deck ({deck.length}/20)</h2>
             {deck.map(card => (
               <Card key={card.id} {...card} onPlay={() => removeFromDeck(card.id)} />
             ))}
@@ -102,7 +106,7 @@ const DeckBuilder: React.FC = () => {
           </div>
         </>
       )}
-      <Link to="/">Exit</Link>
+      <Link to="/" className="return-home">Return to Homepage</Link>
     </div>
   );
 };

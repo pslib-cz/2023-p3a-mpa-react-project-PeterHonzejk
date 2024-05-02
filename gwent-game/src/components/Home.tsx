@@ -1,13 +1,26 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
-const Home: React.FC = () => (
-  <div>
-    <h1>Welcome to Gwent</h1>
-    <Link to="/game">Start Game</Link>
-    <br/>
-    <Link to="/build">Build Deck</Link>
-  </div>
-);
+const Home: React.FC = () => {
+  const navigate = useNavigate();
+
+  const startGame = () => {
+    const deck = localStorage.getItem('userDeck');
+    if (deck && JSON.parse(deck).length === 20) {
+      navigate('/game');
+    } else {
+      alert('You must have exactly 20 cards in your deck to start the game.');
+    }
+  };
+
+  return (
+    <div>
+      <h1>Welcome to Gwent</h1>
+      <button onClick={startGame}>Start Game</button>
+      <br/>
+      <Link to="/build">Build Deck</Link>
+    </div>
+  );
+};
 
 export default Home;
