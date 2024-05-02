@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Card from './Card';
 import { CardData, cardPool } from './cardData';
 
@@ -8,6 +8,10 @@ const DeckBuilder: React.FC = () => {
     const savedDeck = localStorage.getItem('userDeck');
     return savedDeck ? JSON.parse(savedDeck) : [];
   });
+  const [leaderCard, setLeaderCard] = useState<CardData | null>(() => {
+    const savedLeader = localStorage.getItem('userLeader');
+    return savedLeader ? JSON.parse(savedLeader) : null;
+  });
 
   const [selectedFaction, setSelectedFaction] = useState<string | null>(null);
   const [selectedLeader, setSelectedLeader] = useState<number | null>(null);
@@ -15,7 +19,8 @@ const DeckBuilder: React.FC = () => {
 
   useEffect(() => {
     localStorage.setItem('userDeck', JSON.stringify(deck));
-  }, [deck]);
+    localStorage.setItem('userLeader', JSON.stringify(leaderCard));
+  }, [deck, leaderCard]);
 
   useEffect(() => {
     if (selectedFaction) {
@@ -24,15 +29,16 @@ const DeckBuilder: React.FC = () => {
     } else {
       setAvailableCards([]);
       setDeck([]);
+      setLeaderCard(null);
     }
   }, [selectedFaction, deck]);
 
   useEffect(() => {
     if (selectedLeader) {
       const leader = cardPool.find(card => card.id === selectedLeader);
-      if (leader) {
-        setDeck([leader]);
-      }
+      setLeaderCard(leader || null);
+    } else {
+      setLeaderCard(null);
     }
   }, [selectedLeader]);
 
@@ -48,20 +54,17 @@ const DeckBuilder: React.FC = () => {
 
   const addToDeck = (cardId: number) => {
     if (deck.length >= 20) {
-      alert('You cannot add more than 20 cards to the deck, including the leader.');
+      alert('You cannot add more than 20 non-leader cards to the deck.');
       return;
     }
     const card = availableCards.find(card => card.id === cardId);
-    if (card && !deck.some(dc => dc.id === cardId)) {
+    if (card) {
       setDeck(currentDeck => [...currentDeck, card]);
     }
   };
 
   const removeFromDeck = (cardId: number) => {
-    const card = deck.find(card => card.id === cardId);
-    if (card && card.type !== 'Leader') {
-      setDeck(currentDeck => currentDeck.filter(c => c.id !== cardId));
-    }
+    setDeck(currentDeck => currentDeck.filter(c => c.id !== cardId));
   };
 
   const factions = Array.from(new Set(cardPool.filter(card => card.type === 'Leader').map(card => card.faction)));
@@ -79,18 +82,20 @@ const DeckBuilder: React.FC = () => {
         </select>
       </div>
       {selectedFaction && (
-        <div>
-          <label>Select Leader:</label>
-          <select onChange={(e) => handleLeaderSelection(Number(e.target.value))} value={selectedLeader || ""}>
-            <option value="">Choose a leader</option>
-            {cardPool.filter(card => card.faction === selectedFaction && card.type === 'Leader').map(leader => (
-              <option key={leader.id} value={leader.id}>{leader.name}</option>
-            ))}
-          </select>
-        </div>
-      )}
-      {selectedLeader && (
         <>
+          <div>
+            <label>Select Leader:</label>
+            <select onChange={(e) => handleLeaderSelection(Number(e.target.value))} value={selectedLeader || ""}>
+              <option value="">Choose a leader</option>
+              {cardPool.filter(card => card.faction === selectedFaction && card.type === 'Leader').map(leader => (
+                <option key={leader.id} value={leader.id}>{leader.name}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <h2>Your Leader</h2>
+            {leaderCard && <Card {...leaderCard} onPlay={() => {}} />}
+          </div>
           <div>
             <h2>Your Deck ({deck.length}/20)</h2>
             {deck.map(card => (

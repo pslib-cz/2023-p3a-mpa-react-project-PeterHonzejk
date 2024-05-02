@@ -6,10 +6,11 @@ const Home: React.FC = () => {
 
   const startGame = () => {
     const deck = localStorage.getItem('userDeck');
-    if (deck && JSON.parse(deck).length === 20) {
+    const leader = localStorage.getItem('userLeader');
+    if (deck && leader && JSON.parse(deck).length === 20 && JSON.parse(leader)) {
       navigate('/game');
     } else {
-      alert('You must have exactly 20 cards in your deck to start the game.');
+      alert('You must have exactly 20 non-leader cards and 1 leader card in your deck to start the game.');
     }
   };
 

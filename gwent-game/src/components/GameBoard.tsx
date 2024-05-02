@@ -43,11 +43,14 @@ const GameBoard: React.FC = () => {
 
   useEffect(() => {
     const deck = localStorage.getItem('userDeck');
-    if (!deck || JSON.parse(deck).length !== 20) {
-      alert('You must have exactly 20 cards in your deck to play the game.');
+    const leader = localStorage.getItem('userLeader');
+    if (!deck || JSON.parse(deck).length !== 20 || !leader) {
+      alert('You must have exactly 20 cards and a leader card in your deck to play the game.');
       navigate('/');
     } else {
-      setCardsInHand(JSON.parse(deck));
+      const loadedDeck = JSON.parse(deck);
+      const loadedLeader = JSON.parse(leader);
+      setCardsInHand([...loadedDeck, loadedLeader]);
     }
   }, [navigate]);
 
