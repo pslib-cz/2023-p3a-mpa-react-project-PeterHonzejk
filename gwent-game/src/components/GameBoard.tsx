@@ -6,80 +6,70 @@ import { CardData, cardPool } from './cardData';
 type CardType = 'Close Combat' | 'Ranged Combat' | 'Siege' | 'Leader' | 'Weather';
 
 interface Scores {
-  'Close Combat': number;
-  'Ranged Combat': number;
-  Siege: number;
-  Leader: number;
-  Weather: number;
+  player: number;
+  ai: number;
 }
 
 interface PlayedCards {
-  'Close Combat': CardData[];
-  'Ranged Combat': CardData[];
-  Siege: CardData[];
-  Leader: CardData[];
-  Weather: CardData[];
+  [key: string]: CardData[];
 }
 
 const GameBoard: React.FC = () => {
-  const [cardsInHand, setCardsInHand] = useState<CardData[]>([]);
-  const [aiDeck, setAIDeck] = useState<CardData[]>([]);
-  const [aiLeader, setAILeader] = useState<CardData | null>(null);
-  const [remainingCards, setRemainingCards] = useState<CardData[]>([]);
-  const [playedCards, setPlayedCards] = useState<PlayedCards>({
-    'Close Combat': [],
-    'Ranged Combat': [],
-    Siege: [],
-    Leader: [],
-    Weather: []
-  });
-
-  const [scores, setScores] = useState<Scores>({
-    'Close Combat': 0,
-    'Ranged Combat': 0,
-    Siege: 0,
-    Leader: 0,
-    Weather: 0
-  });
+  const [playerCardsInHand, setPlayerCardsInHand] = useState<CardData[]>([]);
+  const [aiCardsInHand, setAICardsInHand] = useState<CardData[]>([]);
+  const [playerRemainingCards, setPlayerRemainingCards] = useState<CardData[]>([]);
+  const [aiRemainingCards, setAIRemainingCards] = useState<CardData[]>([]);
+  const [playerPlayedCards, setPlayerPlayedCards] = useState<PlayedCards>({});
+  const [aiPlayedCards, setAIPlayedCards] = useState<PlayedCards>({});
+  const [scores, setScores] = useState<Scores>({ player: 0, ai: 0 });
+  const [playerWins, setPlayerWins] = useState(0);
+  const [aiWins, setAIWins] = useState(0);
+  const [currentRound, setCurrentRound] = useState(1);
   const [isPlayerTurn, setIsPlayerTurn] = useState(true);
+  const [playerPassed, setPlayerPassed] = useState(false);
+  const [aiPassed, setAIPassed] = useState(false);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    const deck = localStorage.getItem('userDeck');
-    const leader = localStorage.getItem('userLeader');
-    if (!deck || JSON.parse(deck).length !== 20 || !leader) {
+    if (!localStorage.getItem('userDeck') || !localStorage.getItem('userLeader')) {
       alert('You must have exactly 20 cards and a leader card in your deck to play the game.');
       navigate('/');
-    } else {
-      const loadedDeck = JSON.parse(deck);
-      const loadedLeader = JSON.parse(leader);
-      const { leader: aiLeaderCard, deck: aiDeckCards } = getAIDeck();
-      setAILeader(aiLeaderCard);
-      setAIDeck(aiDeckCards);
-
-      const shuffledDeck = shuffle([...loadedDeck, loadedLeader]); 
-      const selectedCards = shuffledDeck.slice(0, 10); 
-      const remainingDeck = shuffledDeck.slice(10);   
-
-      setCardsInHand(selectedCards);
-      setRemainingCards(remainingDeck);
+      return;
     }
-  }, [navigate]);
+    setupGame();
+  }, []);
 
   useEffect(() => {
-    if (!isPlayerTurn) {
-      setTimeout(aiPlayCard, 1000); 
+    if (!isPlayerTurn && !aiPassed) {
+      setTimeout(aiPlayCard, 1000);
     }
-  }, [isPlayerTurn]);
+    checkRoundEnd();
+  }, [isPlayerTurn, aiPassed, playerPassed]);
+
+  const setupGame = () => {
+    const loadedDeck = JSON.parse(localStorage.getItem('userDeck') || '[]');
+    const loadedLeader = JSON.parse(localStorage.getItem('userLeader') || '{}');
+    const { leader: aiLeaderCard, deck: aiDeckCards } = getAIDeck();
+
+    const shuffledPlayerDeck = shuffle([...loadedDeck, loadedLeader]);
+    const shuffledAIDeck = shuffle([...aiDeckCards, aiLeaderCard]);
+
+    setPlayerCardsInHand(shuffledPlayerDeck.slice(0, 11));
+    setPlayerRemainingCards(shuffledPlayerDeck.slice(11));
+    setAICardsInHand(shuffledAIDeck.slice(0, 11))
+    setAIRemainingCards(shuffledAIDeck.slice(11));
+    resetPlayedCards();
+    setPlayerPassed(false);
+    setAIPassed(false);
+    setIsPlayerTurn(true); 
+  };
 
   const getAIDeck = () => {
     const factions = ['Humanity', 'Aliens', 'Rebels', 'Androids'];
     const selectedFaction = factions[Math.floor(Math.random() * factions.length)];
-
     const factionLeaders = cardPool.filter(card => card.faction === selectedFaction && card.type === 'Leader');
     const leader = factionLeaders[Math.floor(Math.random() * factionLeaders.length)];
-
     const factionCards = cardPool.filter(card => card.faction === selectedFaction && card.type !== 'Leader');
     let aiDeck: CardData[] = [];
 
@@ -89,7 +79,6 @@ const GameBoard: React.FC = () => {
         aiDeck.push(randomCard);
       }
     }
-
     return { leader, deck: aiDeck };
   };
 
@@ -101,51 +90,128 @@ const GameBoard: React.FC = () => {
     return deck;
   };
 
-  const playCard = (cardId: number, type: CardType) => {
-    const cardIndex = cardsInHand.findIndex(card => card.id === cardId);
+  const playCard = (cardId: number) => {
+    if (!isPlayerTurn || playerPassed) return;
+
+    const cardIndex = playerCardsInHand.findIndex(card => card.id === cardId);
     if (cardIndex > -1) {
-      const card = cardsInHand.splice(cardIndex, 1)[0];
-      setPlayedCards(prev => ({
+      const card = playerCardsInHand.splice(cardIndex, 1)[0];
+      setPlayerPlayedCards(prev => ({
         ...prev,
-        [type]: [...prev[type], card]
+        [card.type]: [...(prev[card.type] || []), card]
       }));
-      setScores(prevScores => ({
-        ...prevScores,
-        [type]: prevScores[type] + card.power
-      }));
-      setIsPlayerTurn(!isPlayerTurn);
+      updateScores(card.power);
+      setIsPlayerTurn(false);
     }
   };
 
   const aiPlayCard = () => {
-    if (aiDeck.length > 0 && !isPlayerTurn) {
-      const cardToPlay = aiDeck.shift(); 
-      if (cardToPlay) {
-        playCard(cardToPlay.id, cardToPlay.type as CardType);
-        setIsPlayerTurn(true); 
+    if (aiCardsInHand.length > 0 && !aiPassed) {
+      const card = aiCardsInHand.shift();
+      if (card) {
+        setAIPlayedCards(prev => ({
+          ...prev,
+          [card.type]: [...(prev[card.type] || []), card]
+        }));
+        updateScores(card.power, false);
       }
+      setIsPlayerTurn(true);
+      setPlayerPassed(false);
+    } else {
+      aiPass();
     }
   };
 
-  const renderRow = (type: CardType) => {
-    return (
-      <div key={type}>
-        <h2>{type} Cards - Score: {scores[type]}</h2>
-        {playedCards[type].map(card => (
-          <Card key={card.id} {...card} onPlay={() => {}} />
-        ))}
-      </div>
-    );
+  const updateScores = (points: number, isPlayer: boolean = true) => {
+    if (isPlayer) {
+      setScores(prev => ({ ...prev, player: prev.player + points }));
+    } else {
+      setScores(prev => ({ ...prev, ai: prev.ai + points }));
+    }
+  };
+
+  const resetPlayedCards = () => {
+    setPlayerPlayedCards({
+      'Close Combat': [],
+      'Ranged Combat': [],
+      Siege: [],
+      Leader: [],
+      Weather: []
+    });
+    setAIPlayedCards({
+      'Close Combat': [],
+      'Ranged Combat': [],
+      Siege: [],
+      Leader: [],
+      Weather: []
+    });
+  };
+
+  const playerPass = () => {
+    setPlayerPassed(true);
+    setIsPlayerTurn(false);
+  };
+
+  const aiPass = () => {
+    setAIPassed(true);
+    setIsPlayerTurn(true);
+  };
+
+  const checkRoundEnd = () => {
+    if (playerPassed && aiPassed) {
+      endRound();
+    }
+  };
+
+  const endRound = () => {
+    const playerScore = scores.player;
+    const aiScore = scores.ai;
+    let message = `Round ${currentRound} ended. Player: ${playerScore}, AI: ${aiScore}. `;
+    
+    if (playerScore > aiScore) {
+      setPlayerWins(playerWins + 1);
+      message += "Player wins the round!";
+    } else if (playerScore < aiScore) {
+      setAIWins(aiWins + 1);
+      message += "AI wins the round!";
+    } else {
+      message += "Round drawn.";
+    }
+    
+    alert(message);
+    if (playerWins === 2 || aiWins === 2 || currentRound === 3) {
+      concludeGame();
+    } else {
+      setCurrentRound(currentRound + 1);
+      setupGame();
+    }
+  };
+
+  const concludeGame = () => {
+    const finalMessage = playerWins > aiWins ? "Player wins the game!" :
+                         aiWins > playerWins ? "AI wins the game!" : "Game is a draw!";
+    alert(finalMessage);
+    navigate('/');
   };
 
   return (
     <div>
       <h1>Game Board</h1>
-      <h2>Your Cards</h2>
-      {cardsInHand.map(card => (
-        <Card key={card.id} {...card} onPlay={() => playCard(card.id, card.type as CardType)} />
+      <h2>Round {currentRound}</h2>
+      <div>
+        {playerCardsInHand.map(card => (
+          <Card key={card.id} {...card} onPlay={() => playCard(card.id)} />
+        ))}
+        <button onClick={playerPass} disabled={playerPassed}>Pass Turn</button>
+      </div>
+      {(['Close Combat', 'Ranged Combat', 'Siege', 'Leader', 'Weather'] as CardType[]).map(type => (
+        <div key={type}>
+          <h3>{type} Cards - Player</h3>
+          {playerPlayedCards[type]?.map(card => <Card key={card.id} {...card} onPlay={() => {}} />)}
+          <h3>{type} Cards - AI</h3>
+          {aiPlayedCards[type]?.map(card => <Card key={card.id} {...card} onPlay={() => {}} />)}
+        </div>
       ))}
-      {(['Close Combat', 'Ranged Combat', 'Siege', 'Leader', 'Weather'] as CardType[]).map(type => renderRow(type))}
       <div style={{ marginTop: '20px' }}>
         <Link to="/">Exit</Link>
       </div>
