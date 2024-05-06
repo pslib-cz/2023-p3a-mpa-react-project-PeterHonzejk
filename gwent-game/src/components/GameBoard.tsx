@@ -25,7 +25,7 @@ const GameBoard: React.FC = () => {
   const [cardsInHand, setCardsInHand] = useState<CardData[]>([]);
   const [aiDeck, setAIDeck] = useState<CardData[]>([]);
   const [aiLeader, setAILeader] = useState<CardData | null>(null);
-  const [remainingCards, setRemainingCards] = useState<CardData[]>([]); 
+  const [remainingCards, setRemainingCards] = useState<CardData[]>([]);
   const [playedCards, setPlayedCards] = useState<PlayedCards>({
     'Close Combat': [],
     'Ranged Combat': [],
@@ -41,6 +41,7 @@ const GameBoard: React.FC = () => {
     Leader: 0,
     Weather: 0
   });
+  const [isPlayerTurn, setIsPlayerTurn] = useState(true);
 
   const navigate = useNavigate();
 
@@ -66,6 +67,12 @@ const GameBoard: React.FC = () => {
     }
   }, [navigate]);
 
+  useEffect(() => {
+    if (!isPlayerTurn) {
+      setTimeout(aiPlayCard, 1000); 
+    }
+  }, [isPlayerTurn]);
+
   const getAIDeck = () => {
     const factions = ['Humanity', 'Aliens', 'Rebels', 'Androids'];
     const selectedFaction = factions[Math.floor(Math.random() * factions.length)];
@@ -74,7 +81,7 @@ const GameBoard: React.FC = () => {
     const leader = factionLeaders[Math.floor(Math.random() * factionLeaders.length)];
 
     const factionCards = cardPool.filter(card => card.faction === selectedFaction && card.type !== 'Leader');
-    let aiDeck: CardData[] = []; 
+    let aiDeck: CardData[] = [];
 
     while (aiDeck.length < 20) {
       const randomCard = factionCards[Math.floor(Math.random() * factionCards.length)];
@@ -106,6 +113,17 @@ const GameBoard: React.FC = () => {
         ...prevScores,
         [type]: prevScores[type] + card.power
       }));
+      setIsPlayerTurn(!isPlayerTurn);
+    }
+  };
+
+  const aiPlayCard = () => {
+    if (aiDeck.length > 0 && !isPlayerTurn) {
+      const cardToPlay = aiDeck.shift(); 
+      if (cardToPlay) {
+        playCard(cardToPlay.id, cardToPlay.type as CardType);
+        setIsPlayerTurn(true); 
+      }
     }
   };
 
