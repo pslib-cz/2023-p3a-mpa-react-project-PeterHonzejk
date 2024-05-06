@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Card from './Card';
-import { CardData } from './cardData';
+import { CardData, cardPool } from './cardData';
 
 type CardType = 'Close Combat' | 'Ranged Combat' | 'Siege' | 'Leader' | 'Weather';
 
@@ -23,7 +23,9 @@ interface PlayedCards {
 
 const GameBoard: React.FC = () => {
   const [cardsInHand, setCardsInHand] = useState<CardData[]>([]);
-  const [remainingCards, setRemainingCards] = useState<CardData[]>([]); // Store remaining cards
+  const [aiDeck, setAIDeck] = useState<CardData[]>([]);
+  const [aiLeader, setAILeader] = useState<CardData | null>(null);
+  const [remainingCards, setRemainingCards] = useState<CardData[]>([]); 
   const [playedCards, setPlayedCards] = useState<PlayedCards>({
     'Close Combat': [],
     'Ranged Combat': [],
@@ -51,18 +53,43 @@ const GameBoard: React.FC = () => {
     } else {
       const loadedDeck = JSON.parse(deck);
       const loadedLeader = JSON.parse(leader);
-      const shuffledDeck = shuffle([...loadedDeck]);
-      const selectedCards = shuffledDeck.slice(0, 10); // Select 10 random cards
-      const remainingDeck = shuffledDeck.slice(10);   // Remaining cards
-      setCardsInHand([...selectedCards, loadedLeader]); // Include leader card
+      const { leader: aiLeaderCard, deck: aiDeckCards } = getAIDeck();
+      setAILeader(aiLeaderCard);
+      setAIDeck(aiDeckCards);
+
+      const shuffledDeck = shuffle([...loadedDeck, loadedLeader]); 
+      const selectedCards = shuffledDeck.slice(0, 10); 
+      const remainingDeck = shuffledDeck.slice(10);   
+
+      setCardsInHand(selectedCards);
       setRemainingCards(remainingDeck);
     }
   }, [navigate]);
 
+  const getAIDeck = () => {
+    const factions = ['Humanity', 'Aliens', 'Rebels', 'Androids'];
+    const selectedFaction = factions[Math.floor(Math.random() * factions.length)];
+
+    const factionLeaders = cardPool.filter(card => card.faction === selectedFaction && card.type === 'Leader');
+    const leader = factionLeaders[Math.floor(Math.random() * factionLeaders.length)];
+
+    const factionCards = cardPool.filter(card => card.faction === selectedFaction && card.type !== 'Leader');
+    let aiDeck: CardData[] = []; 
+
+    while (aiDeck.length < 20) {
+      const randomCard = factionCards[Math.floor(Math.random() * factionCards.length)];
+      if (!aiDeck.find(card => card.id === randomCard.id)) {
+        aiDeck.push(randomCard);
+      }
+    }
+
+    return { leader, deck: aiDeck };
+  };
+
   const shuffle = (deck: CardData[]) => {
     for (let i = deck.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [deck[i], deck[j]] = [deck[j], deck[i]]; // Swap elements
+      [deck[i], deck[j]] = [deck[j], deck[i]];
     }
     return deck;
   };
