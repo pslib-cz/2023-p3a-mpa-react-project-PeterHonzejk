@@ -52,20 +52,23 @@ const GameBoard: React.FC = () => {
     const loadedLeader = JSON.parse(localStorage.getItem('userLeader') || '{}');
     const { leader: aiLeaderCard, deck: aiDeckCards } = getAIDeck();
 
-    const shuffledPlayerDeck = shuffle([...loadedDeck, loadedLeader]);
-    const shuffledAIDeck = shuffle([...aiDeckCards, aiLeaderCard]);
+    // Initial card distribution for each round
+    const initialCardCount = currentRound === 1 ? 11 : 7; // 11 for first round, 7 for subsequent rounds
+    const shuffledPlayerDeck = shuffle([...playerRemainingCards, loadedLeader, ...loadedDeck]);
+    const shuffledAIDeck = shuffle([...aiRemainingCards, aiLeaderCard, ...aiDeckCards]);
 
-    setPlayerCardsInHand(shuffledPlayerDeck.slice(0, 11));
-    setPlayerRemainingCards(shuffledPlayerDeck.slice(11));
-    setAICardsInHand(shuffledAIDeck.slice(0, 11))
-    setAIRemainingCards(shuffledAIDeck.slice(11));
+    setPlayerCardsInHand(shuffledPlayerDeck.slice(0, initialCardCount));
+    setPlayerRemainingCards(shuffledPlayerDeck.slice(initialCardCount));
+    setAICardsInHand(shuffledAIDeck.slice(0, initialCardCount))
+    setAIRemainingCards(shuffledAIDeck.slice(initialCardCount));
     resetPlayedCards();
     setPlayerPassed(false);
     setAIPassed(false);
-    setIsPlayerTurn(true); 
+    setIsPlayerTurn(currentRound % 2 === 0);  // AI starts on even rounds
   };
 
   const getAIDeck = () => {
+    // AI deck selection logic
     const factions = ['Humanity', 'Aliens', 'Rebels', 'Androids'];
     const selectedFaction = factions[Math.floor(Math.random() * factions.length)];
     const factionLeaders = cardPool.filter(card => card.faction === selectedFaction && card.type === 'Leader');
@@ -114,9 +117,12 @@ const GameBoard: React.FC = () => {
           [card.type]: [...(prev[card.type] || []), card]
         }));
         updateScores(card.power, false);
+        if (playerPassed && scores.ai > scores.player) {
+          aiPass(); // AI passes if it's ahead in points after the player has passed
+        } else {
+          setIsPlayerTurn(true);
+        }
       }
-      setIsPlayerTurn(true);
-      setPlayerPassed(false);
     } else {
       aiPass();
     }
